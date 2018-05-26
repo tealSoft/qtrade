@@ -38,7 +38,8 @@ public class QtradeUI extends UI {
 
 		Button button = new Button("Click Me");
 		button.addClickListener(e -> {
-			layout.addComponent(new Label("Thanks " + name.getValue() + ", it works!"));
+			layout.addComponent(
+					new Label("Thanks " + name.getValue() + ", it works! => " + QtradeQueue.INSTANCE.take()));
 		});
 
 		layout.addComponents(name, button);

@@ -6,7 +6,7 @@ public enum QtradeQueue {
 
 	INSTANCE;
 
-	public static final int QUEUE_SIZE = 10000;
+	private static final int QUEUE_SIZE = 10000;
 
 	private ArrayBlockingQueue<Order> orderQueue;
 

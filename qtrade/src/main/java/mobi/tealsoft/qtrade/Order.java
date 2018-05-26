@@ -1,5 +1,7 @@
 package mobi.tealsoft.qtrade;
 
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 public class Order {
 	public static final String DATE_FORMAT = "dd-MM-yy HH:mm:ss";
 
@@ -74,5 +76,10 @@ public class Order {
 
 	public void setUserId(long userId) {
 		this.userId = userId;
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this);
 	}
 }
