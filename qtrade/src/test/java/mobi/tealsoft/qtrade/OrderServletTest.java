@@ -22,7 +22,7 @@ public class OrderServletTest {
 
 	private static final String QTRADE_URL = "http://localhost:8080/qtrade/orders";
 
-	private static final int ORDER_COUNT = 100000;
+	private static final int ORDER_COUNT = 1;
 	private static final String[] COUNTRIES = new String[] { "FR", "BE", "DE", "ES", "PT", "IT", "NL", "LU", "CH", "UK",
 			"IR", "US", "JP" };
 	private static final String[] CURRENCIES = new String[] { "EUR", "USD", "GBP", "CHF", "JPY" };
@@ -43,9 +43,9 @@ public class OrderServletTest {
 			order.setCurrencyTo(CURRENCIES[random.nextInt(CURRENCIES.length)]);
 		} while (order.getCurrencyFrom().equals(order.getCurrencyTo()));
 
-		order.setAmountBuy(random.nextDouble() * 10000);
-		order.setAmountSell(random.nextDouble() * 10000);
-		order.setRate(random.nextDouble());
+		order.setAmountBuy(random.nextFloat() * 10000);
+		order.setAmountSell(random.nextFloat() * 10000);
+		order.setRate(random.nextFloat());
 
 		order.setTimePlaced(sdf.format(new Date()));
 
@@ -92,8 +92,11 @@ public class OrderServletTest {
 			Order order = getNewOrder();
 			String json = gson.toJson(order);
 
-			// LOG.info("Order: " + json);
-			sendRequest(json);
+			try {
+				sendRequest(json);
+			} catch (Exception e) {
+				LOG.error("Error sending: " + json, e);
+			}
 		}
 	}
 }

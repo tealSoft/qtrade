@@ -5,20 +5,20 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 public class Order {
 	public static final String DATE_FORMAT = "dd-MM-yy HH:mm:ss";
 
-	private long userId;
+	private int userId;
 	private String currencyFrom;
 	private String currencyTo;
-	private double amountSell;
-	private double amountBuy;
-	private double rate;
+	private float amountSell;
+	private float amountBuy;
+	private float rate;
 	private String timePlaced;
 	private String originatingCountry;
 
-	public double getAmountBuy() {
+	public float getAmountBuy() {
 		return amountBuy;
 	}
 
-	public double getAmountSell() {
+	public float getAmountSell() {
 		return amountSell;
 	}
 
@@ -34,7 +34,7 @@ public class Order {
 		return originatingCountry;
 	}
 
-	public double getRate() {
+	public float getRate() {
 		return rate;
 	}
 
@@ -42,15 +42,15 @@ public class Order {
 		return timePlaced;
 	}
 
-	public long getUserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setAmountBuy(double amountBuy) {
+	public void setAmountBuy(float amountBuy) {
 		this.amountBuy = amountBuy;
 	}
 
-	public void setAmountSell(double amountSell) {
+	public void setAmountSell(float amountSell) {
 		this.amountSell = amountSell;
 	}
 
@@ -66,7 +66,7 @@ public class Order {
 		this.originatingCountry = originatingCountry;
 	}
 
-	public void setRate(double rate) {
+	public void setRate(float rate) {
 		this.rate = rate;
 	}
 
@@ -74,7 +74,7 @@ public class Order {
 		this.timePlaced = timePlaced;
 	}
 
-	public void setUserId(long userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 

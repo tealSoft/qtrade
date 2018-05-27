@@ -18,6 +18,7 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Layout;
 import com.vaadin.ui.ProgressBar;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
@@ -41,8 +42,15 @@ public class QtradeUI extends UI {
 
 	private static final long serialVersionUID = -3397955958954838533L;
 	private static final long REFRESH_WAIT = 50L;
+
+	private TextField fieldTotalOrders;
+	private TextField fieldAverageAmount;
+
 	private Map<String, ProgressBar> ordersCountryBars;
 	private GridLayout gridOrdersCountry;
+
+	private Map<String, ProgressBar> ordersCurrencyBars;
+	private GridLayout gridOrdersCurrency;
 
 	private Button buttonRefresh;
 	private Button buttonStop;
@@ -87,14 +95,35 @@ public class QtradeUI extends UI {
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
 		ordersCountryBars = new TreeMap<>();
+		ordersCurrencyBars = new TreeMap<>();
 
 		final VerticalLayout layout = new VerticalLayout();
 		final Label title = new Label("Qtrade FOREX statistics");
 
+		final GridLayout grid = new GridLayout(2, 2);
+		grid.setSpacing(true);
+
+		fieldTotalOrders = new TextField("Total Orders");
+		fieldTotalOrders.setWidth(200, Unit.PIXELS);
+		fieldTotalOrders.setVisible(true);
+		fieldTotalOrders.setReadOnly(true);
+		grid.addComponent(fieldTotalOrders);
+
+		fieldAverageAmount = new TextField("Average Amount");
+		fieldAverageAmount.setWidth(200, Unit.PIXELS);
+		fieldAverageAmount.setVisible(true);
+		fieldAverageAmount.setReadOnly(true);
+		grid.addComponent(fieldAverageAmount);
+
 		gridOrdersCountry = new GridLayout();
 		gridOrdersCountry.setCaption("Orders by Country");
+		grid.addComponent(gridOrdersCountry);
 
-		layout.addComponents(title, gridOrdersCountry, getButtons());
+		gridOrdersCurrency = new GridLayout();
+		gridOrdersCurrency.setCaption("Orders by Currency");
+		grid.addComponent(gridOrdersCurrency);
+
+		layout.addComponents(title, grid, getButtons());
 
 		setContent(layout);
 		buttonRefresh.click();
@@ -114,22 +143,35 @@ public class QtradeUI extends UI {
 	}
 
 	private void refreshBarLayout(GridLayout layout, Map<String, Float> dataMap, Map<String, ProgressBar> barMap) {
+		barMap.clear();
 		layout.removeAllComponents();
 		layout.setColumns(2);
-		layout.setRows(dataMap.size());
 
-		barMap.clear();
-		for (Map.Entry<String, Float> entry : dataMap.entrySet()) {
-			Label label = new Label(entry.getKey());
+		if (dataMap.isEmpty()) {
+			layout.setRows(1);
+
+			Label blank = new Label();
+			layout.addComponent(blank);
+
+			Label label = new Label("Sorry, no data available yet.");
 			layout.addComponent(label);
 			layout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
 
-			ProgressBar bar = new ProgressBar();
-			bar.setWidth(200, Unit.PIXELS);
-			bar.setVisible(true);
-			barMap.put(entry.getKey(), bar);
-			layout.addComponent(bar);
-			layout.setComponentAlignment(bar, Alignment.MIDDLE_LEFT);
+		} else {
+			layout.setRows(dataMap.size());
+
+			for (Map.Entry<String, Float> entry : dataMap.entrySet()) {
+				Label label = new Label(entry.getKey());
+				layout.addComponent(label);
+				layout.setComponentAlignment(label, Alignment.MIDDLE_LEFT);
+
+				ProgressBar bar = new ProgressBar();
+				bar.setWidth(200, Unit.PIXELS);
+				bar.setVisible(true);
+				barMap.put(entry.getKey(), bar);
+				layout.addComponent(bar);
+				layout.setComponentAlignment(bar, Alignment.MIDDLE_LEFT);
+			}
 		}
 	}
 
@@ -149,17 +191,28 @@ public class QtradeUI extends UI {
 	}
 
 	private void refreshOrdersCountry() {
-		int totalOrders = Statistics.INSTANCE.readTotalOrders();
 		Map<String, Float> ordersCountry = Statistics.INSTANCE.readOrdersCountry();
-		if (containsNewMapKey(ordersCountry, ordersCountryBars)) {
+		if (ordersCountry.isEmpty() || containsNewMapKey(ordersCountry, ordersCountryBars)) {
 			refreshBarLayout(gridOrdersCountry, ordersCountry, ordersCountryBars);
 		}
 		refreshBars(ordersCountry, ordersCountryBars);
 	}
 
+	private void refreshOrdersCurrency() {
+		Map<String, Float> ordersCurrency = Statistics.INSTANCE.readOrdersCurrency();
+		if (ordersCurrency.isEmpty() || containsNewMapKey(ordersCurrency, ordersCurrencyBars)) {
+			refreshBarLayout(gridOrdersCurrency, ordersCurrency, ordersCurrencyBars);
+		}
+		refreshBars(ordersCurrency, ordersCurrencyBars);
+	}
+
 	private void updateUI(UI ui) {
 		ui.access(() -> {
+			fieldTotalOrders.setValue(Integer.toString(Statistics.INSTANCE.readTotalOrders()));
+			fieldAverageAmount.setValue(Float.toString(Statistics.INSTANCE.readAverageAmount()));
+
 			refreshOrdersCountry();
+			refreshOrdersCurrency();
 			ui.push();
 		});
 	}
