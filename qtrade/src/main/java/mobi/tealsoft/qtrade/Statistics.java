@@ -12,7 +12,7 @@ public enum Statistics {
 	INSTANCE;
 
 	private AtomicInteger totalOrders;
-	private ConcurrentHashMap<String, Integer> ordersCountry;
+	private ConcurrentHashMap<String, Float> ordersCountry;
 
 	private Statistics() {
 		totalOrders = new AtomicInteger(0);
@@ -28,16 +28,16 @@ public enum Statistics {
 
 	private void addOrdersCountry(Order order) {
 		if (!StringUtils.isEmpty(order.getOriginatingCountry())) {
-			Integer count = ordersCountry.get(order.getOriginatingCountry());
+			Float count = ordersCountry.get(order.getOriginatingCountry());
 			if (count == null) {
-				count = Integer.valueOf(0);
+				count = Float.valueOf(0.0F);
 			}
-			ordersCountry.put(order.getOriginatingCountry(), Integer.valueOf(count + 1));
+			ordersCountry.put(order.getOriginatingCountry(), Float.valueOf(count + 1.0F));
 		}
 	}
 
-	public Map<String, Integer> readOrdersCountry() {
-		Map<String, Integer> result = new TreeMap<>();
+	public Map<String, Float> readOrdersCountry() {
+		Map<String, Float> result = new TreeMap<>();
 		result.putAll(ordersCountry);
 		return result;
 	}

@@ -39,8 +39,6 @@ public class OrderServlet extends HttpServlet {
 			throws ServletException, IOException {
 
 		String jsonBody = getBody(request);
-		System.out.println("++++ json=" + jsonBody);
-
 		if (!StringUtils.isEmpty(jsonBody)) {
 			try {
 				Order order = gson.fromJson(jsonBody, Order.class);
