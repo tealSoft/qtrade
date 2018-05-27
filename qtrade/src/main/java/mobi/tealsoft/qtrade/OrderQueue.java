@@ -2,7 +2,7 @@ package mobi.tealsoft.qtrade;
 
 import java.util.concurrent.ArrayBlockingQueue;
 
-public enum QtradeQueue {
+public enum OrderQueue {
 
 	INSTANCE;
 
@@ -10,7 +10,7 @@ public enum QtradeQueue {
 
 	private ArrayBlockingQueue<Order> orderQueue;
 
-	private QtradeQueue() {
+	private OrderQueue() {
 		orderQueue = new ArrayBlockingQueue<>(QUEUE_SIZE);
 	}
 
